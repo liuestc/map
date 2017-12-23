@@ -1,0 +1,57 @@
+<!-- 重点参数：iconStyle, iconLabel -->
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <!-- 原始地址：//webapi.amap.com/ui/1.0/ui/overlay/SimpleMarker/examples/index.html -->
+    <base href="//webapi.amap.com/ui/1.0/ui/overlay/SimpleMarker/examples/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>内置样式</title>
+    <style>
+    html,
+    body,
+    #container {
+        width: 100%;
+        height: 100%;
+        margin: 0px;
+    }
+
+    .amap-marker-label {
+        font-size: 13px;
+        border: 1px solid orange;
+        background: #fff;
+        border-radius: 10px 0 0 0;
+        color: #690441;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+    <script type="text/javascript" src='//webapi.amap.com/maps?v=1.4.2&key=您申请的key值'></script>
+    <!-- UI组件库 1.0 -->
+    <script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
+    <script type="text/javascript">
+    //创建地图
+    var map = new AMap.Map('container', {
+        zoom: 19,
+        center:[104.057123,30.586199]
+    });
+    var position=[104.057123,30.586199]
+
+    var lnglatXY=position;//地图上所标点的坐标
+    geocoder.getAddress(lnglatXY, function(status, result) {
+        if (status === 'complete' && result.info === 'OK') {
+           //获得了有效的地址信息:
+           //即，result.regeocode.formattedAddress
+        }else{
+           //获取地址失败
+        }
+    }); 
+
+
+    </script>
+</body>
+
+</html>

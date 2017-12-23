@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>移动测试</title>
+    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+    <script src="http://webapi.amap.com/maps?v=1.4.2&key=f79782f4e04353a4901d7ae71f96fc5e"></script>
+    <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+</head>
+<body>
+<div id="container"></div>
+<div id="tip"></div>
+<div class="button-group">
+    <!-- <input type="button" class="button" value="删除多个点标记" id="clearMarker"/> -->
+
+</div>
+<script>
+    // navigator.geolocation.getCurrentPosition(function(data){
+    //     console.log(data)
+    //     var crd = pos.coords;
+    //     alert('Latitude : ' + crd.latitude);
+    // },function(data){
+    //     console.log(err)
+    //      alert('ERROR(' + err.code + '): ' + err.message);
+    // },{
+    //   enableHighAccuracy: true,
+    //   timeout: 5000,
+    //   maximumAge: 0
+    // })
+
+    function getRandomArbitrary(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    var map = new AMap.Map("container", {
+        resizeEnable: true,
+        center: [104.057123,30.586199],
+        zoom: 19
+    });
+
+//  定位
+    map.plugin('AMap.Geolocation', function() {
+        geolocation = new AMap.Geolocation({
+            enableHighAccuracy: true,//是否使用高精度定位，默认:true
+            timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+            buttonOffset: new AMap.Pixel(140, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+            zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+            buttonPosition:'RB',
+            convert: true
+        });
+        map.addControl(geolocation);
+        geolocation.getCurrentPosition();
+        geolocation.watchPosition();
+        AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+        AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
+    });
+    //解析定位结果
+    function onComplete(data) {
+        var str=['定位成功'];
+       // http://restapi.amap.com/v3/assistant/coordinate/convert?key=f79782f4e04353a4901d7ae71f96fc5e&locations='104.054621,30.588663'&coordsys=gps
+        str.push('经度：' + data.position.getLng());
+        str.push('纬度：' + data.position.getLat());
+        if(data.accuracy){
+             str.push('精度：' + data.accuracy + ' 米');
+        }//如为IP精确定位结果则没有精度信息
+        str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
+        document.getElementById('tip').innerHTML = str.join('<br>');
+    }
+    //解析定位错误信息
+    function onError(data) {
+        document.getElementById('tip').innerHTML = '定位失败';
+    }
+
+
+    // map.plugin('AMap.Geolocation', function () {
+    //     geolocation = new AMap.Geolocation({
+    //         enableHighAccuracy: true,//是否使用高精度定位，默认:true
+    //         timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+    //         maximumAge: 0,           //定位结果缓存0毫秒，默认：0
+    //         convert: true,           //自动偏移坐标，偏移后的坐标为高德坐标，默认：true
+    //         showButton: true,        //显示定位按钮，默认：true
+    //         buttonPosition: 'LB',    //定位按钮停靠位置，默认：'LB'，左下角
+    //         buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+    //         showMarker: true,        //定位成功后在定位到的位置显示点标记，默认：true
+    //         showCircle: true,        //定位成功后用圆圈表示定位精度范围，默认：true
+    //         panToLocation: false,     //定位成功后将定位到的位置作为地图中心点，默认：true
+    //         zoomToAccuracy:false      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+    //     });
+    //     mapObj.addControl(geolocation);
+    //     geolocation.getCurrentPosition();
+    //     AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+    //     AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
+    // });
+
+    // function onComplete(data){
+    //     console.log("定位成功",data)
+    // }
+
+    // function onError(data){
+    //     console.log("定位失败",data)
+    // }
+
+    var markers = [], positions = [[104.058123,30.587199], [104.059123,30.587199], [104.057823,30.586999], [104.057423,30.586199], [104.051123,30.584199]];
+    // for (var i = 0, marker; i < positions.length; i++) {
+    //     marker = new AMap.Marker({
+    //         map: map,
+    //         position: positions[i]
+    //     });
+    //     markers.push(marker);
+    // }
+
+    setInterval(function(){
+        // remove
+        map.remove(markers);
+
+
+        for (var i = 0, marker; i < positions.length; i++) {
+            //  随机加坐标
+            // positions[i]
+            let random0=getRandomArbitrary(0.000001,0.000009)
+            let random1=getRandomArbitrary(0.000001,0.000009)
+
+            console.log(positions[i])
+            positions[i]=[positions[i][0]+random0,positions[i][1]+random1]
+
+            marker = new AMap.Marker({
+                map: map,
+                position: positions[i]
+            });
+            markers.push(marker);
+        }
+    },5000)
+
+
+    var circle = new AMap.Circle({
+        center: new AMap.LngLat("104.057123", "30.586199"),// 圆心位置
+        radius: 50, //半径
+        strokeColor: "#F33", //线颜色
+        strokeOpacity: 1, //线透明度
+        strokeWeight: 3, //线粗细度
+        fillColor: "#ee2200", //填充颜色
+        fillOpacity: 0.35//填充透明度
+    });
+    circle.setMap(map);
+
+</script>
+</body>
+</html>

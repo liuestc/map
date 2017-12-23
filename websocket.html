@@ -1,0 +1,49 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>loginPage</title>
+
+    <script type="text/javascript">
+        var username = '';
+        var ws;//一个websocket就是一个浏览器，如果不手动断开连接或者关闭浏览器，就会一直打开。
+        /*var target2 = "ws://localhost:8080/userSocket";*/
+        var target2 = "ws://139.129.118.14:8083/killBoss/userSocket";
+
+        window.onload=function () {
+            if ('WebSocket' in window) {
+                ws = new WebSocket(target2);
+            } else if ('MozWebSocket' in window) {
+                ws = new MozWebSocket(target2);
+            } else {
+                alert('WebSocket is not supported by this browser.');//浏览器不支持webSocket
+                return;
+            }
+            ws.onmessage=function (event) {
+                var dv = document.getElementById("dv");
+                dv.innerHTML+=event.data+"<br/>";
+            }
+        }
+        function disconnect() {
+            if (ws != null) {
+                ws.close();
+                ws = null;
+            }
+            setConnected(false);
+        }
+        function subsend() {
+            var msg = document.getElementById("msg").value;
+            ws.send(msg);
+            document.getElementById("msg").value="";
+        }
+    </script>
+
+</head>
+<body>
+    <button id="disconnect" onclick="disconnect();">Disconnect</button>
+    <br/>
+    <input id="msg"/><button onclick="subsend();">send</button>
+    <br/>
+    <div id="dv" style="border: 1px solid black;width:800px;height: 400px;float: left"></div>
+    <br/>
+</body>
+</html>

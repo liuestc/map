@@ -1,0 +1,106 @@
+<!-- 重点参数：iconStyle, iconLabel -->
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <!-- 原始地址：//webapi.amap.com/ui/1.0/ui/overlay/SimpleMarker/examples/index.html -->
+    <base href="//webapi.amap.com/ui/1.0/ui/overlay/SimpleMarker/examples/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>内置样式</title>
+    <style>
+    html,
+    body,
+    #container {
+        width: 100%;
+        height: 100%;
+        margin: 0px;
+    }
+
+    .amap-marker-label {
+        font-size: 13px;
+        border: 1px solid orange;
+        background: #fff;
+        border-radius: 10px 0 0 0;
+        color: #690441;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+    <script type="text/javascript" src='//webapi.amap.com/maps?v=1.4.2&key=您申请的key值'></script>
+    <!-- UI组件库 1.0 -->
+    <script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
+    <script type="text/javascript">
+    //创建地图
+    var map = new AMap.Map('container', {
+        zoom: 19,
+        center:[104.057123,30.586199]
+    });
+    var position=[104.057123,30.586199]
+    setInterval(function(){
+         position=[position[0]+0.001,position[1]+0.001]
+        
+
+
+    AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
+        console.log(position)
+        var iconTheme = 'default';
+        new SimpleMarker({
+            iconTheme: iconTheme,
+            iconLabel: {
+                //A,B,C.....
+                innerHTML: "1",
+                style: {
+                    color: 'red'
+                }
+            },
+            map: map,
+            position: position
+            // showPositionPoint:{
+            //     color:'rgba(0,0,0,.5)',//点的颜色
+            //     radius: 20 //点的半径。 
+            // }
+
+
+        });
+
+        new SimpleMarker({
+            iconTheme: iconTheme,
+            iconLabel: {
+                //A,B,C.....
+                innerHTML: "2",
+                style: {
+                    color: 'red'
+                }
+            },
+            map: map,
+            position: [104.057523,30.586599],
+
+        });
+
+        new SimpleMarker({
+            iconTheme: iconTheme,
+            iconLabel: {
+                //A,B,C.....
+                innerHTML: "3",
+                style: {
+                    color: 'red'
+                }
+            },
+            map: map,
+            position: [104.056523,30.586599],
+
+        });
+    });
+
+    },3000)
+
+    //加载SimpleMarker
+
+
+    </script>
+</body>
+
+</html>

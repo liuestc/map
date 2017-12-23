@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>逆地理编码</title>
+    <link rel="stylesheet" href="https://cache.amap.com/lbs/static/main1119.css"/>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.2&key=a4e555839c391fa9184bbd235651c989&plugin=AMap.Geocoder"></script>
+    <script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+</head>
+<!-- onload="regeocoder()" -->
+<body >
+<div id="container"></div>
+<div id="tip">
+    <!-- <b>经纬度 116.396574, 39.992706 的地理编码结果:</b> -->
+    <span id="result"></span>
+</div>
+<script type="text/javascript">
+
+    // lnglatXY = [116.396574, 39.992706]; //已知点坐标
+    // function regeocoder() {  //逆地理编码
+    //     var geocoder = new AMap.Geocoder({
+    //         radius: 1000,
+    //         extensions: "all"
+    //     });        
+    //     geocoder.getAddress(lnglatXY, function(status, result) {
+    //         if (status === 'complete' && result.info === 'OK') {
+    //             geocoder_CallBack(result);
+    //         }
+    //     });        
+    //     var marker = new AMap.Marker({  //加点
+    //         map: map,
+    //         position: lnglatXY
+    //     });
+    //     map.setFitView();
+    // }
+    // function geocoder_CallBack(data) {
+    //     var address = data.regeocode.formattedAddress; //返回地址描述
+    //     document.getElementById("result").innerHTML = address;
+    // }
+
+    var map = new AMap.Map("container", {
+        resizeEnable: true,
+        zoom: 18
+    }) 
+
+
+    var options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
+    };
+
+    // function success(pos) {
+    //     var crd = pos.coords;
+    //     var geocoder = new AMap.Geocoder({
+    //         radius: 1000,
+    //         extensions: "all"
+    //     });  
+
+    //   let lnglatXY=[crd.longitude,crd.latitude]
+    //   alert(lnglatXY)
+    //   var convert=new AMap.convertFrom(lnglatXY,"gps",function(status,res){
+    //     console.log(res.locations)
+    //     let position=res.locations[0]
+    //     let lnglat=[position.lng,position.lat]
+
+
+    //    var marker = new AMap.Marker({  //加点
+    //         map: map,
+    //         position: lnglat
+    //     });
+    //     map.setFitView();
+
+    //   })
+
+    // };
+
+    function error(err) {
+        console.log(err)
+        alert("定位失败")
+      // alert('ERROR(' + err.code + '): ' + err.message);
+    };
+
+
+    function onComplete(data) {
+        var str=['定位成功'];
+        alert("定位成功")
+        console.log("data",data)
+        let position=data.position
+        let lnglat=[position.lng,position.lat]
+        console.log("lnglat",lnglat)
+        // str.push('经度：' + data.position.getLng());
+        // str.push('纬度：' + data.position.getLat());
+        // if(data.accuracy){
+        //      str.push('精度：' + data.accuracy + ' 米');
+        // }//如为IP精确定位结果则没有精度信息
+        // str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
+        // document.getElementById('tip').innerHTML = str.join('<br>');
+
+          // var convert=new AMap.convertFrom(lnglat,"gps",function(status,res){
+          //   console.log(res.locations)
+          //   let position1=res.locations[0]
+          //   let lnglatXY=[position1.lng,position1.lat]
+
+          //  console.log("lnglatXY",lnglatXY)
+
+            // map.setFitView(marker);
+
+          // })
+
+
+        var ws = new WebSocket("ws://139.129.118.14:8083/killBoss/userSocket");
+
+        ws.onopen = function(evt) { 
+          console.log("Connection open ..."); 
+          var obj={
+             "code": 0,
+             "dimension": lat[1],
+             "longitude": lnglat[0],
+             "prop": {
+              "describe": " this is a prop descibe",
+              "id": 1,
+              "isDelete": 0,
+              "status": 0,
+              "type": 2
+             },
+             "user": {
+              "headImageUrl": "asdfasdfasdfadfadf",
+              "id": 1,
+              "isDelete": 0,
+              "openId": "asdfadfadf",
+              "status": {
+               "attackers": [],
+               "blood": 3,
+               "code": 0,
+               "dimension": lnglat[0],
+               "killNo": 4,
+               "killUser": 1,
+               "longitude": lnglat[0],
+               "rank": 0,
+               "victim": null,
+               "visibleUsers": []
+              },
+              "userName": "zhangsan"
+             }
+        }
+          ws.send(JSON.stringify(obj));
+        };
+
+        ws.onmessage = function(evt) {
+          console.log( "Received Message: " + evt.data);
+
+          // ws.close();
+        };
+
+        ws.onclose = function(evt) {
+          console.log("Connection closed.");
+        };
+
+    }
+
+
+window.onload=function(){
+
+    var map = new AMap.Map("container", {
+        resizeEnable: true,
+        zoom: 18
+    }) 
+
+
+   var marker = new AMap.Marker({  //加点
+        map: map,
+        position: [104.05848, 30.585703]
+    });
+
+    // navigator.geolocation.getCurrentPosition(success, error, options);
+    map.plugin('AMap.Geolocation', function() {
+        geolocation = new AMap.Geolocation({
+            enableHighAccuracy: true,//是否使用高精度定位，默认:true
+            timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+            buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+            zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+            buttonPosition:'RB'
+        });
+        map.addControl(geolocation);
+        geolocation.getCurrentPosition();
+        AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+        AMap.event.addListener(geolocation, 'error', error);      //返回定位出错信息
+    });
+
+}
+</script>
+</body>
+</html>
